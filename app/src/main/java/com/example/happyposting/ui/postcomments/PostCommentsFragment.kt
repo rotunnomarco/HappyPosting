@@ -1,6 +1,9 @@
 package com.example.happyposting.ui.postcomments
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,6 +15,7 @@ import com.example.happyposting.R
 import com.example.happyposting.classes.Comment
 import com.example.happyposting.classes.Post
 import kotlinx.android.synthetic.main.fragment_post_comments.*
+import kotlinx.android.synthetic.main.layout_entry_comment.*
 
 
 class PostCommentsFragment(
@@ -48,7 +52,12 @@ class PostCommentsFragment(
             commentIdPosition = -1
             postIdPosition = -1
         }
-
+        /*
+        btnCam.setOnClickListener {
+            val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val REQUEST_CODE = 42
+            startActivityForResult(takePicture, REQUEST_CODE)
+        }*/
         buttonSend.setOnClickListener {
             if (messageInput.text.isNotEmpty()) {
                 val comment = Comment(
@@ -60,12 +69,17 @@ class PostCommentsFragment(
                 )
                 viewModel.addComment(comment)
                 commentsAdapter.comments.add(comment)
-
                 recyclerview_Comments.scrollToPosition(commentsAdapter.comments.size - 1)
                 commentsAdapter.notifyDataSetChanged()
                 messageInput.text.clear()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val takenImage = data?.extras?.get("data") as Bitmap
+        myImage.setImageBitmap(takenImage)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     fun openPostComments(postId: Int) {
