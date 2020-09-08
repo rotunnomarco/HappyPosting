@@ -8,14 +8,14 @@ import com.example.happyposting.api.ApiRepository
 import com.example.happyposting.api.adapter.NetworkResponse
 import com.example.happyposting.classes.Post
 import com.example.happyposting.database.Post.PostDao
-import com.example.happyposting.database.PostDatabase
+import com.example.happyposting.database.MyDatabase
 import com.example.happyposting.database.Post.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ApiRepository = ApiRepository()
-    private val postDao: PostDao = PostDatabase.getDatabase(application).postDao()
+    private val postDao: PostDao = MyDatabase.getDatabase(application).postDao()
     private val dbRepository: PostRepository
     val trackLiveData: LiveData<List<Post>>
 

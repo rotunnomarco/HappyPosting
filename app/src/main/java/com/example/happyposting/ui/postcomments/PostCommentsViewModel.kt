@@ -10,17 +10,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.happyposting.api.ApiRepository
 import com.example.happyposting.api.adapter.NetworkResponse
 import com.example.happyposting.classes.Comment
-import com.example.happyposting.database.PostDatabase
+import com.example.happyposting.database.MyDatabase
 import com.example.happyposting.database.comment.CommentDao
 import com.example.happyposting.database.comment.CommentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PostCommentsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ApiRepository = ApiRepository()
 
-    private val commentDao: CommentDao = PostDatabase.getDatabase(application).commentDao()
+    private val commentDao: CommentDao = MyDatabase.getDatabase(application).commentDao()
     private val dbRepository: CommentRepository
     var trackLiveComments: LiveData<List<Comment>>
 
@@ -31,10 +33,6 @@ class PostCommentsViewModel(application: Application) : AndroidViewModel(applica
 
     fun getAllCommentsWithId(id: Int) {
         trackLiveComments = dbRepository.getAllCommentsWithId(id)
-    }
-
-    fun getMaxCommentId(): Comment {
-        return dbRepository.getMaxCommentId()
     }
 
     fun addListComment(comment: List<Comment>) {
@@ -77,5 +75,4 @@ class PostCommentsViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
-
 }

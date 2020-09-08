@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "table_Comments")
 data class Comment(
 
-    @PrimaryKey(autoGenerate = true)@ColumnInfo(name="id")
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
     @SerializedName("id") val id: Int?,
 
     @ColumnInfo(name = "postId")
@@ -24,4 +24,4 @@ data class Comment(
     @ColumnInfo(name = "body")
     @SerializedName("body") val body: String
 
-)
+) : PostAdapterItem

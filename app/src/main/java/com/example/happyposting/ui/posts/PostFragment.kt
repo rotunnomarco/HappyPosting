@@ -58,7 +58,8 @@ class PostFragment : Fragment(R.layout.fragment_post), PostAdapterListener {
         edit.setOnClickListener {
             editPostFragment = EditPostFragment(postAdapter.posts)
             (it.context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentLayout, editPostFragment).addToBackStack(null)
+                .replace(R.id.fragmentLayout, editPostFragment)
+                .addToBackStack(null)
                 .commit()
 
             editPostFragment.editPost(id)

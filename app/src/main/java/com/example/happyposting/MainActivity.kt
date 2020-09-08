@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.happyposting.ui.posts.PostFragment
 
-//var postFragment= PostFragment()
 
 class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager

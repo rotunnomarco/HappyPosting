@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,9 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.happyposting.R
 import com.example.happyposting.classes.Comment
+import com.example.happyposting.classes.Image
 import com.example.happyposting.classes.Post
 import kotlinx.android.synthetic.main.fragment_post_comments.*
-import kotlinx.android.synthetic.main.layout_entry_comment.*
 
 
 class PostCommentsFragment(
@@ -24,7 +23,6 @@ class PostCommentsFragment(
 
     private var postIdPosition: Int = -1
     private var commentIdPosition: Int = -1
-    var idJsonPlaceholder: List<Comment> = listOf()
 
     private val viewModel: PostCommentsViewModel by viewModels()
     private val commentsAdapter: PostCommentsAdapter by lazy {
@@ -52,12 +50,13 @@ class PostCommentsFragment(
             commentIdPosition = -1
             postIdPosition = -1
         }
-        /*
+
         btnCam.setOnClickListener {
             val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val REQUEST_CODE = 42
             startActivityForResult(takePicture, REQUEST_CODE)
-        }*/
+        }
+
         buttonSend.setOnClickListener {
             if (messageInput.text.isNotEmpty()) {
                 val comment = Comment(
@@ -68,8 +67,8 @@ class PostCommentsFragment(
                     messageInput.text.toString()
                 )
                 viewModel.addComment(comment)
-                commentsAdapter.comments.add(comment)
-                recyclerview_Comments.scrollToPosition(commentsAdapter.comments.size - 1)
+                commentsAdapter.dataSet.add(comment)
+                recyclerview_Comments.scrollToPosition(commentsAdapter.dataSet.size - 1)
                 commentsAdapter.notifyDataSetChanged()
                 messageInput.text.clear()
             }
@@ -78,7 +77,8 @@ class PostCommentsFragment(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val takenImage = data?.extras?.get("data") as Bitmap
-        myImage.setImageBitmap(takenImage)
+        commentsAdapter.dataSet.add(Image(takenImage))
+        commentsAdapter.notifyDataSetChanged()
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -99,19 +99,19 @@ class PostCommentsFragment(
         this.requireActivity().onBackPressed()
     }
 
-
     private fun addObservers() {
         viewModel.comment.observe(viewLifecycleOwner, Observer { comment ->
             viewModel.addListComment(comment)
         })
+
         viewModel.getAllCommentsWithId(commentIdPosition)
+
         viewModel.trackLiveComments.observe(viewLifecycleOwner, Observer { comment ->
-            Log.e("Commenti", comment.toString())
             if (comment.isNullOrEmpty()) {
                 viewModel.getNetworkCommentsWithId(commentIdPosition)
             } else {
-                commentsAdapter.comments.clear()
-                commentsAdapter.comments.addAll(comment)
+                commentsAdapter.dataSet.clear()
+                commentsAdapter.dataSet.addAll(comment)
                 commentsAdapter.notifyDataSetChanged()
             }
         })

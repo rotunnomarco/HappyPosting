@@ -13,7 +13,7 @@ interface PostAdapterListener {
 }
 
 class PostAdapter(
-    var posts: MutableList<Post>,
+    val posts: MutableList<Post>,
     private val listener: PostAdapterListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -37,7 +37,6 @@ class PostAdapter(
         (holder as PostViewHolder).bind(posts[position])
     }
 
-
     override fun getItemCount(): Int {
         return posts.size
     }
@@ -50,7 +49,6 @@ class PostAdapter(
     class PostViewHolder(
         private val binding: LayoutEntryPostBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
         fun bind(item: Post) {
             binding.textTitle.text = item.title
         }
