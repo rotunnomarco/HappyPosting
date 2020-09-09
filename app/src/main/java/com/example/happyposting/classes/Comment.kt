@@ -23,9 +23,6 @@ data class Comment(
     @SerializedName("email") val email: String?,
 
     @ColumnInfo(name = "body")
-    @SerializedName("body") val body: String?,
-
-    @ColumnInfo(name = "image")
-    val image: String?
+    @SerializedName("body") val body: String?
 
 ) : PostAdapterItem

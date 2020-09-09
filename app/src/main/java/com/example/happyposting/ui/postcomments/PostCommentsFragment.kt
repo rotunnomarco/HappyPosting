@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.happyposting.R
 import com.example.happyposting.classes.Comment
 import com.example.happyposting.classes.Image
-import com.example.happyposting.classes.ImageBitmapString
+import com.example.happyposting.classes.BitmapStringAdapter
 import com.example.happyposting.classes.Post
 import kotlinx.android.synthetic.main.fragment_post_comments.*
 
@@ -24,7 +24,7 @@ class PostCommentsFragment(
 
     private var postIdPosition: Int = -1
     private var commentIdPosition: Int = -1
-    private val databaseImageAdapter = ImageBitmapString()
+    private val databaseImageAdapter = BitmapStringAdapter()
     private val viewModel: PostCommentsViewModel by viewModels()
     private val commentsAdapter: PostCommentsAdapter by lazy {
         PostCommentsAdapter(
@@ -65,8 +65,7 @@ class PostCommentsFragment(
                     commentIdPosition.toString(),
                     "Marco",
                     "marco.rotunno@overapp.it",
-                    messageInput.text.toString(),
-                    null
+                    messageInput.text.toString()
                 )
                 viewModel.addComment(comment)
                 commentsAdapter.dataSet.add(comment)
@@ -87,7 +86,6 @@ class PostCommentsFragment(
                 commentIdPosition.toString(),
                 "Marco",
                 "marco.rotunno@overapp.it",
-                null,
                 databaseImageAdapter.bitMapToString(takenImage)
             )
         )
@@ -125,15 +123,22 @@ class PostCommentsFragment(
             } else {
                 commentsAdapter.dataSet.clear()
                 for (entry in comment) {
+                    /*
                     if (!entry.body.isNullOrEmpty()) {
                         commentsAdapter.dataSet.add(entry)
                         commentsAdapter.notifyDataSetChanged()
                     } else if (!entry.image.isNullOrEmpty()) {
                         commentsAdapter.dataSet.add(Image(databaseImageAdapter.stringToBitMap(entry.image)))
                         commentsAdapter.notifyDataSetChanged()
+                    }*/
+                    if (databaseImageAdapter.stringToBitMap(entry.body) == null) {
+                        commentsAdapter.dataSet.add(entry)
+                        commentsAdapter.notifyDataSetChanged()
+                    } else {
+                        commentsAdapter.dataSet.add(Image(databaseImageAdapter.stringToBitMap(entry.body)))
+                        commentsAdapter.notifyDataSetChanged()
                     }
                 }
-
             }
         })
     }
