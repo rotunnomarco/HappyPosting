@@ -26,16 +26,15 @@ class EditPostFragment(
 
         viewModel = ViewModelProvider(this).get(PostViewModel::class.java)
 
-        confirmPostModify.setOnClickListener {
+        confirmPostModifyFAB.setOnClickListener {
             posts[postPosition].body = edit_postBody.text.toString()
             posts[postPosition].title = edit_postText.text.toString()
             viewModel.updatePost(posts[postPosition])
             postPosition = -1
             this.requireActivity().onBackPressed()
-
         }
 
-        backToPostsFAB.setOnClickListener {
+        backToPostsFragmentFAB.setOnClickListener {
             postPosition = -1
             this.requireActivity().supportFragmentManager.beginTransaction().apply {
                 replace(
@@ -49,6 +48,7 @@ class EditPostFragment(
 
     fun editPost(position: Int) {
         postPosition = posts.indexOfFirst {
-            it.id == position }
+            it.id == position
+        }
     }
 }

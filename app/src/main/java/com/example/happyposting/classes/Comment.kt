@@ -1,5 +1,6 @@
 package com.example.happyposting.classes
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,12 +17,15 @@ data class Comment(
     @SerializedName("postId") val postId: String,
 
     @ColumnInfo(name = "name")
-    @SerializedName("name") val name: String,
+    @SerializedName("name") val name: String?,
 
     @ColumnInfo(name = "email")
-    @SerializedName("email") val email: String,
+    @SerializedName("email") val email: String?,
 
     @ColumnInfo(name = "body")
-    @SerializedName("body") val body: String
+    @SerializedName("body") val body: String?,
+
+    @ColumnInfo(name = "image")
+    val image: String?
 
 ) : PostAdapterItem

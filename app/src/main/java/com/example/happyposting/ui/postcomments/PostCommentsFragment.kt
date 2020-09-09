@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.happyposting.R
 import com.example.happyposting.classes.Comment
 import com.example.happyposting.classes.Image
+import com.example.happyposting.classes.ImageBitmapString
 import com.example.happyposting.classes.Post
 import kotlinx.android.synthetic.main.fragment_post_comments.*
 
@@ -23,7 +24,7 @@ class PostCommentsFragment(
 
     private var postIdPosition: Int = -1
     private var commentIdPosition: Int = -1
-
+    private val databaseImageAdapter = ImageBitmapString()
     private val viewModel: PostCommentsViewModel by viewModels()
     private val commentsAdapter: PostCommentsAdapter by lazy {
         PostCommentsAdapter(
@@ -64,7 +65,8 @@ class PostCommentsFragment(
                     commentIdPosition.toString(),
                     "Marco",
                     "marco.rotunno@overapp.it",
-                    messageInput.text.toString()
+                    messageInput.text.toString(),
+                    null
                 )
                 viewModel.addComment(comment)
                 commentsAdapter.dataSet.add(comment)
@@ -78,6 +80,17 @@ class PostCommentsFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val takenImage = data?.extras?.get("data") as Bitmap
         commentsAdapter.dataSet.add(Image(takenImage))
+
+        viewModel.addComment(
+            Comment(
+                null,
+                commentIdPosition.toString(),
+                "Marco",
+                "marco.rotunno@overapp.it",
+                null,
+                databaseImageAdapter.bitMapToString(takenImage)
+            )
+        )
         commentsAdapter.notifyDataSetChanged()
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -111,8 +124,16 @@ class PostCommentsFragment(
                 viewModel.getNetworkCommentsWithId(commentIdPosition)
             } else {
                 commentsAdapter.dataSet.clear()
-                commentsAdapter.dataSet.addAll(comment)
-                commentsAdapter.notifyDataSetChanged()
+                for (entry in comment) {
+                    if (!entry.body.isNullOrEmpty()) {
+                        commentsAdapter.dataSet.add(entry)
+                        commentsAdapter.notifyDataSetChanged()
+                    } else if (!entry.image.isNullOrEmpty()) {
+                        commentsAdapter.dataSet.add(Image(databaseImageAdapter.stringToBitMap(entry.image)))
+                        commentsAdapter.notifyDataSetChanged()
+                    }
+                }
+
             }
         })
     }

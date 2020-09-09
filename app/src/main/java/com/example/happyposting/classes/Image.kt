@@ -4,6 +4,6 @@ import android.graphics.Bitmap
 
 data class Image(
 
-    var bitmapToLoad: Bitmap
+    var bitmapToLoad: Bitmap?
 
 ) : PostAdapterItem
