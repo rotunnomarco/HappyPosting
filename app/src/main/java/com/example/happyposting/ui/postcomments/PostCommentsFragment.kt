@@ -56,6 +56,7 @@ class PostCommentsFragment(
             val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val REQUEST_CODE = 42
             startActivityForResult(takePicture, REQUEST_CODE)
+            recyclerview_Comments.scrollToPosition(commentsAdapter.dataSet.size - 1)
         }
 
         buttonSend.setOnClickListener {
@@ -65,12 +66,13 @@ class PostCommentsFragment(
                     commentIdPosition.toString(),
                     "Marco",
                     "marco.rotunno@overapp.it",
-                    messageInput.text.toString()
+                    messageInput.text.toString(),
+                    "Text"
                 )
                 viewModel.addComment(comment)
-                commentsAdapter.dataSet.add(comment)
-                recyclerview_Comments.scrollToPosition(commentsAdapter.dataSet.size - 1)
+
                 commentsAdapter.notifyDataSetChanged()
+                recyclerview_Comments.scrollToPosition(commentsAdapter.dataSet.size - 1)
                 messageInput.text.clear()
             }
         }
@@ -78,7 +80,6 @@ class PostCommentsFragment(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val takenImage = data?.extras?.get("data") as Bitmap
-        commentsAdapter.dataSet.add(Image(takenImage))
 
         viewModel.addComment(
             Comment(
@@ -86,7 +87,8 @@ class PostCommentsFragment(
                 commentIdPosition.toString(),
                 "Marco",
                 "marco.rotunno@overapp.it",
-                databaseImageAdapter.bitMapToString(takenImage)
+                databaseImageAdapter.bitMapToString(takenImage),
+                "Image"
             )
         )
         commentsAdapter.notifyDataSetChanged()
@@ -123,21 +125,18 @@ class PostCommentsFragment(
             } else {
                 commentsAdapter.dataSet.clear()
                 for (entry in comment) {
-                    /*
-                    if (!entry.body.isNullOrEmpty()) {
+                    if (entry.type == "Image") {
+                        commentsAdapter.dataSet.add(
+                            Image(
+                                entry.name,
+                                entry.email,
+                                databaseImageAdapter.stringToBitMap(entry.body)
+                            )
+                        )
+                    } else{
                         commentsAdapter.dataSet.add(entry)
-                        commentsAdapter.notifyDataSetChanged()
-                    } else if (!entry.image.isNullOrEmpty()) {
-                        commentsAdapter.dataSet.add(Image(databaseImageAdapter.stringToBitMap(entry.image)))
-                        commentsAdapter.notifyDataSetChanged()
-                    }*/
-                    if (databaseImageAdapter.stringToBitMap(entry.body) == null) {
-                        commentsAdapter.dataSet.add(entry)
-                        commentsAdapter.notifyDataSetChanged()
-                    } else {
-                        commentsAdapter.dataSet.add(Image(databaseImageAdapter.stringToBitMap(entry.body)))
-                        commentsAdapter.notifyDataSetChanged()
                     }
+                    commentsAdapter.notifyDataSetChanged()
                 }
             }
         })

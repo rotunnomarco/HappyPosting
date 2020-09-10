@@ -69,7 +69,9 @@ class PostCommentsAdapter(
         private val binding: LayoutEntryCommentImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun bind(image: Image) {
+            binding.textName.text = image.name + "\n" + image.mail
             binding.myImage.setImageBitmap(image.bitmapToLoad)
         }
     }
